@@ -3,51 +3,521 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>mazin · sdai.nl</title>
+    <meta name="description" content="Portfolio van Mazin — softwareontwikkelaar." />
+    <title>Mazin · Portfolio</title>
     <style>
-      :root { color-scheme: light dark; }
+      :root {
+        color-scheme: light;
+        --bg: #f4f6fb;
+        --bg-2: #ffffff;
+        --text: #22314f;
+        --muted: #5b6680;
+        --heading: #0f1a2e;
+        --panel: #ffffff;
+        --panel-2: #f6f8fd;
+        --border: #e4e9f3;
+        --accent: #6366f1;
+        --accent-2: #8b5cf6;
+        --accent-soft: rgba(99, 102, 241, 0.10);
+        --accent-2-soft: rgba(139, 92, 246, 0.10);
+        --nav-bg: rgba(255, 255, 255, 0.82);
+        --shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+        --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.14);
+        --ok: #22c55e;
+        --warn: #f59e0b;
+        --bad: #ef4444;
+      }
+      [data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #0b1020;
+        --bg-2: #111832;
+        --text: #d9deee;
+        --muted: #97a1bb;
+        --heading: #f2f4fb;
+        --panel: rgba(255, 255, 255, 0.055);
+        --panel-2: rgba(255, 255, 255, 0.035);
+        --border: rgba(255, 255, 255, 0.14);
+        --accent: #818cf8;
+        --accent-2: #a78bfa;
+        --accent-soft: rgba(129, 140, 248, 0.16);
+        --accent-2-soft: rgba(167, 139, 250, 0.14);
+        --nav-bg: rgba(11, 16, 32, 0.72);
+        --shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+        --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
+      }
       * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
       body {
-        margin: 0; min-height: 100vh; display: grid; place-items: center;
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-        background: radial-gradient(1200px 600px at 50% -10%, #6366f1 0%, #0b1020 55%);
-        color: #e7e9f3;
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(1100px 520px at 85% -10%, var(--accent-soft), transparent 60%),
+          radial-gradient(900px 520px at -5% 15%, var(--accent-2-soft), transparent 55%),
+          var(--bg);
+        background-attachment: fixed;
+        line-height: 1.65;
+        min-height: 100vh;
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      img, svg { display: block; }
+      h1, h2, h3 { color: var(--heading); line-height: 1.2; margin: 0; }
+      p { margin: 0; }
+      section { scroll-margin-top: 84px; }
+      .skip-link {
+        position: absolute; left: -9999px; top: 0; z-index: 100;
+        background: var(--accent); color: #fff; padding: 0.6rem 1rem; border-radius: 0 0 10px 0;
+      }
+      .skip-link:focus { left: 0; color: #fff; text-decoration: none; }
+      .wrap { max-width: 1080px; margin: 0 auto; padding: 0 1.25rem; }
+
+      /* Navigatie */
+      .nav {
+        position: sticky; top: 0; z-index: 50;
+        background: var(--nav-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-inner {
+        max-width: 1080px; margin: 0 auto; padding: 0.8rem 1.25rem;
+        display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      }
+      .brand { font-size: 1.25rem; font-weight: 800; color: var(--heading); letter-spacing: -0.02em; }
+      .brand:hover { text-decoration: none; }
+      .brand span { color: var(--accent); }
+      .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+      .nav-links { display: flex; align-items: center; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+      .nav-links a { color: var(--muted); font-weight: 500; font-size: 0.95rem; }
+      .nav-links a:hover { color: var(--heading); text-decoration: none; }
+      .theme-toggle, .nav-toggle {
+        display: grid; place-items: center; width: 42px; height: 42px;
+        border-radius: 12px; cursor: pointer; border: 1px solid var(--border);
+        background: var(--panel-2); color: var(--text); transition: transform 0.15s ease, background 0.2s ease;
+      }
+      .theme-toggle:hover, .nav-toggle:hover { transform: translateY(-1px); }
+      .theme-toggle .icon, .nav-toggle .icon { width: 20px; height: 20px; }
+      [data-theme="dark"] .icon-sun { display: block; }
+      [data-theme="dark"] .icon-moon { display: none; }
+      .icon-sun { display: none; }
+      .icon-moon { display: block; }
+      .nav-toggle { display: none; flex-direction: column; gap: 4px; }
+      .nav-toggle span { width: 18px; height: 2px; background: currentColor; border-radius: 2px; }
+
+      /* Hero */
+      .hero { padding: 5rem 0 4rem; }
+      .hero-inner { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 3rem; align-items: center; }
+      .eyebrow {
+        display: inline-block; padding: 0.28rem 0.8rem; border-radius: 999px;
+        background: var(--accent-soft); color: var(--accent); font-size: 0.8rem; font-weight: 700;
+        letter-spacing: 0.02em; margin-bottom: 1.1rem;
+      }
+      .hero h1 { font-size: clamp(2.3rem, 5.5vw, 3.6rem); font-weight: 800; letter-spacing: -0.03em; }
+      .gradient {
+        background: linear-gradient(100deg, var(--accent), var(--accent-2));
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .hero .lead { margin: 1.1rem 0 1.75rem; color: var(--muted); font-size: 1.12rem; max-width: 34rem; }
+      .btn-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.72rem 1.3rem;
+        border-radius: 12px; font-weight: 600; font-size: 0.95rem; border: 1px solid transparent;
+        cursor: pointer; transition: transform 0.15s ease, filter 0.2s ease, background 0.2s ease;
+      }
+      .btn:hover { text-decoration: none; transform: translateY(-2px); }
+      .btn.primary { background: var(--accent); color: #fff; box-shadow: 0 10px 24px var(--accent-soft); }
+      .btn.primary:hover { filter: brightness(1.08); }
+      .btn.ghost { background: transparent; border-color: var(--border); color: var(--text); }
+      .btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
+      .hero-stats { display: flex; gap: 2rem; margin-top: 2.2rem; }
+      .hero-stats .num { font-size: 1.6rem; font-weight: 800; color: var(--heading); }
+      .hero-stats .lbl { font-size: 0.82rem; color: var(--muted); }
+      .avatar-wrap { display: flex; justify-content: center; }
+      .avatar {
+        width: min(320px, 80%); aspect-ratio: 1; border-radius: 28px;
+        display: grid; place-items: center; position: relative;
+        background: linear-gradient(140deg, var(--accent), var(--accent-2));
+        box-shadow: var(--shadow-lg);
+      }
+      .avatar::after {
+        content: ""; position: absolute; inset: -14px; border-radius: 34px;
+        border: 1px dashed var(--border); z-index: -1;
+      }
+      .avatar .initials { font-size: clamp(3rem, 9vw, 4.6rem); font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+
+      /* Secties */
+      .section { padding: 3.5rem 0; }
+      .section-head { margin-bottom: 2rem; }
+      .section-head .eyebrow { margin-bottom: 0.5rem; }
+      .section-head h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); font-weight: 800; letter-spacing: -0.02em; }
+      .section-head p { color: var(--muted); margin-top: 0.5rem; max-width: 42rem; }
       .card {
-        max-width: 640px; margin: 2rem; padding: 2.5rem;
-        background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 20px; backdrop-filter: blur(8px);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+        background: var(--panel); border: 1px solid var(--border); border-radius: 18px;
+        padding: 1.6rem; box-shadow: var(--shadow);
       }
-      h1 { margin: 0 0 .25rem; font-size: 2rem; }
-      .badge { display:inline-block; font-size:.8rem; padding:.2rem .6rem;
-        background:#6366f1; border-radius:999px; margin-bottom:1rem; }
-      p { line-height: 1.6; opacity: .9; }
-      code { background: rgba(0,0,0,.35); padding: .15rem .4rem; border-radius: 6px; font-size:.9em; }
-      ol { line-height: 1.9; }
-      a { color: #a5b4fc; }
+      .grid { display: grid; gap: 1.25rem; }
+      .grid.two { grid-template-columns: repeat(2, 1fr); }
+      .grid.three { grid-template-columns: repeat(3, 1fr); }
+      .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+      .about-card p + p { margin-top: 0.9rem; }
+      .about-card strong { color: var(--heading); }
+      .about-card ul { margin: 0.9rem 0 0; padding-left: 1.2rem; color: var(--muted); }
+      .about-card li { margin-bottom: 0.4rem; }
+
+      /* Vaardigheden */
+      .skill { display: flex; flex-direction: column; gap: 0.5rem; }
+      .skill-head { display: flex; justify-content: space-between; font-weight: 600; font-size: 0.95rem; }
+      .skill-head .pct { color: var(--accent); }
+      .skill-bar { height: 8px; border-radius: 999px; background: var(--panel-2); overflow: hidden; }
+      .skill-bar span { display: block; height: 100%; width: 0; border-radius: 999px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        transition: width 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
+      .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+      .tag { padding: 0.3rem 0.7rem; border-radius: 999px; background: var(--panel-2);
+        border: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); }
+
+      /* Projecten */
+      .project { display: flex; flex-direction: column; gap: 0.85rem; }
+      .project-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+      .project-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+        background: var(--accent-soft); color: var(--accent); font-size: 1.3rem; font-weight: 800; }
+      .project h3 { font-size: 1.15rem; }
+      .project p { color: var(--muted); font-size: 0.94rem; flex: 1; }
+      .project-links { display: flex; gap: 1rem; font-size: 0.9rem; font-weight: 600; }
+
+      /* Contact */
+      .contact-card { text-align: center; padding: 2.5rem 1.6rem; }
+      .contact-card h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); font-weight: 800; }
+      .contact-card p { color: var(--muted); max-width: 34rem; margin: 0.75rem auto 1.6rem; }
+      .contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+      .contact-links .btn { background: var(--panel-2); border-color: var(--border); color: var(--text); }
+
+      footer { border-top: 1px solid var(--border); padding: 1.6rem 0; margin-top: 2rem; }
+      .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem;
+        color: var(--muted); font-size: 0.88rem; }
+
+      /* Reveal animatie */
+      .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+      .reveal.visible { opacity: 1; transform: none; }
+
+      @media (max-width: 860px) {
+        .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+        .hero .lead { margin-left: auto; margin-right: auto; }
+        .btn-row, .hero-stats { justify-content: center; }
+        .about-grid, .grid.two, .grid.three { grid-template-columns: 1fr; }
+        .nav-links {
+          position: absolute; top: 100%; left: 0; right: 0;
+          flex-direction: column; gap: 0; background: var(--nav-bg);
+          border-bottom: 1px solid var(--border); padding: 0.5rem 1.25rem 1rem;
+          display: none;
+        }
+        .nav-links.open { display: flex; }
+        .nav-links li { width: 100%; }
+        .nav-links a { display: block; padding: 0.7rem 0; }
+        .nav-toggle { display: flex; }
+      }
     </style>
+    <script>
+      // Zet het thema vóór de eerste render om flitsen te voorkomen.
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          if (!stored) {
+            stored = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          }
+          document.documentElement.dataset.theme = stored;
+        } catch (e) { /* negeer */ }
+      })();
+    </script>
   </head>
   <body>
-    <main class="card">
-      <span class="badge">AI Training · sdai.nl</span>
-      <h1>Hoi mazin 👋</h1>
-      <p>
-        Je omgeving draait. Deze pagina wordt geserveerd vanuit
-        <code>/workspace/mazin-website</code> op poort <code>3000</code> en is
-        live op <a href="https://mazin.sdai.nl">mazin.sdai.nl</a>.
-      </p>
-      <p>Aan de slag met je agent:</p>
-      <ol>
-        <li>Open de browser-IDE of SSH in je omgeving.</li>
-        <li>Laat de agent deze site verbouwen tot jouw web-app.</li>
-        <li>Sla het werk op: <code>git add -A &amp;&amp; git commit -m "..." &amp;&amp; git push</code></li>
-      </ol>
-      <p style="opacity:.7;font-size:.9rem">
-        Je code staat in <code>github.com/sayfjawad/mazin-website</code>.
-        Vervang gerust <code>server.js</code> en <code>index.html</code> door je eigen framework —
-        blijf alleen op <code>0.0.0.0:3000</code> serveren.
-      </p>
+    <a class="skip-link" href="#main">Naar inhoud</a>
+
+    <nav class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="#home">Mazin<span>.</span></a>
+        <div class="nav-right">
+          <ul class="nav-links" id="nav-links">
+            <li><a href="#over">Over mij</a></li>
+            <li><a href="#skills">Vaardigheden</a></li>
+            <li><a href="#projecten">Projecten</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Schakelen tussen lichte en donkere modus">
+            <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+            <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+          <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Menu openen" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main id="main">
+      <!-- Hero -->
+      <section class="hero" id="home">
+        <div class="wrap hero-inner">
+          <div>
+            <span class="eyebrow">Portfolio</span>
+            <h1>Hallo, ik ben <span class="gradient">Mazin</span>.</h1>
+            <p class="lead">
+              Softwareontwikkelaar die graag overzichtelijke en snelle webapplicaties bouwt —
+              van idee tot werkend product, met oog voor detail en gebruiksvriendelijkheid.
+            </p>
+            <div class="btn-row">
+              <a class="btn primary" href="#projecten">Bekijk mijn werk</a>
+              <a class="btn ghost" href="#contact">Neem contact op</a>
+            </div>
+            <div class="hero-stats">
+              <div><div class="num">10+</div><div class="lbl">Projecten</div></div>
+              <div><div class="num">5+</div><div class="lbl">Technologieën</div></div>
+              <div><div class="num">∞</div><div class="lbl">Nieuwsgierigheid</div></div>
+            </div>
+          </div>
+          <div class="avatar-wrap">
+            <div class="avatar"><span class="initials">M</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Over mij -->
+      <section class="section" id="over">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <span class="eyebrow">Over mij</span>
+            <h2>Wie ik ben</h2>
+            <p>Een korte introductie over mij en waar ik enthousiast van word.</p>
+          </div>
+          <div class="about-grid">
+            <div class="card about-card reveal">
+              <p>
+                Ik ben <strong>Mazin</strong>, een softwareontwikkelaar met een passie voor het bouwen van
+                heldere, snelle en toegankelijke webapplicaties. Ik vind het leuk om complexe problemen
+                op te delen in overzichtelijke stappen.
+              </p>
+              <p>
+                Mijn focus ligt op het hele proces: van het ontwerpen van de data en de logica tot een
+                fijne interface. Ik werk graag met moderne JavaScript en Node.js, en ik hecht veel waarde
+                aan schone, geteste code.
+              </p>
+            </div>
+            <div class="card about-card reveal">
+              <p><strong>Waar ik goed in ben</strong></p>
+              <ul>
+                <li>Webapplicaties ontwerpen en bouwen (front-end én back-end)</li>
+                <li>Data modelleren en API's opzetten</li>
+                <li>Overzichtelijke, onderhoudbare code schrijven</li>
+                <li>Samenwerken en helder communiceren</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vaardigheden -->
+      <section class="section" id="skills">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <span class="eyebrow">Vaardigheden</span>
+            <h2>Wat ik kan</h2>
+            <p>Technologieën en tools waar ik dagelijks mee werk.</p>
+          </div>
+          <div class="grid two">
+            <div class="card reveal">
+              <div class="skill">
+                <div class="skill-head"><span>HTML &amp; CSS</span><span class="pct">90%</span></div>
+                <div class="skill-bar"><span data-level="90"></span></div>
+              </div>
+              <div class="skill" style="margin-top:1rem">
+                <div class="skill-head"><span>JavaScript</span><span class="pct">85%</span></div>
+                <div class="skill-bar"><span data-level="85"></span></div>
+              </div>
+              <div class="skill" style="margin-top:1rem">
+                <div class="skill-head"><span>Node.js</span><span class="pct">80%</span></div>
+                <div class="skill-bar"><span data-level="80"></span></div>
+              </div>
+            </div>
+            <div class="card reveal">
+              <div class="skill">
+                <div class="skill-head"><span>SQL / databases</span><span class="pct">75%</span></div>
+                <div class="skill-bar"><span data-level="75"></span></div>
+              </div>
+              <div class="skill" style="margin-top:1rem">
+                <div class="skill-head"><span>Git &amp; versiebeheer</span><span class="pct">80%</span></div>
+                <div class="skill-bar"><span data-level="80"></span></div>
+              </div>
+              <div class="skill" style="margin-top:1rem">
+                <div class="skill-head"><span>UI / UX &amp; design</span><span class="pct">70%</span></div>
+                <div class="skill-bar"><span data-level="70"></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="tags reveal">
+            <span class="tag">JavaScript</span><span class="tag">Node.js</span><span class="tag">SQLite</span>
+            <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">Git</span>
+            <span class="tag">REST API's</span><span class="tag">Responsive design</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projecten -->
+      <section class="section" id="projecten">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <span class="eyebrow">Projecten</span>
+            <h2>Waar ik aan heb gewerkt</h2>
+            <p>Een selectie van projecten waar ik trots op ben.</p>
+          </div>
+          <div class="grid three">
+            <article class="card project reveal">
+              <div class="project-top">
+                <div class="project-icon">B</div>
+                <div class="tags" style="margin:0">
+                  <span class="tag">Node.js</span><span class="tag">SQLite</span>
+                </div>
+              </div>
+              <h3>Beoordelingssysteem eindexamens</h3>
+              <p>
+                Full-stack webapp die per examenonderdeel een weging bijhoudt en automatisch het
+                eindcijfer berekent, met een eigen REST-API en database.
+              </p>
+              <div class="project-links">
+                <a href="#contact">Demo</a><a href="https://github.com/sayfjawad/mazin-website" target="_blank" rel="noopener">Code</a>
+              </div>
+            </article>
+            <article class="card project reveal">
+              <div class="project-top">
+                <div class="project-icon">W</div>
+                <div class="tags" style="margin:0">
+                  <span class="tag">JavaScript</span><span class="tag">API</span>
+                </div>
+              </div>
+              <h3>Weer-dashboard</h3>
+              <p>
+                Overzichtelijk dashboard dat live weergegevens ophaalt en netjes weergeeft,
+                met een eigen donkere modus en responsief ontwerp.
+              </p>
+              <div class="project-links">
+                <a href="#contact">Demo</a><a href="#contact">Code</a>
+              </div>
+            </article>
+            <article class="card project reveal">
+              <div class="project-top">
+                <div class="project-icon">T</div>
+                <div class="tags" style="margin:0">
+                  <span class="tag">HTML/CSS</span><span class="tag">UI</span>
+                </div>
+              </div>
+              <h3>Takenplanner</h3>
+              <p>
+                Simpele maar complete takenlijst met filters, deadlines en lokale opslag —
+                gemaakt om productief te blijven zonder gedoe.
+              </p>
+              <div class="project-links">
+                <a href="#contact">Demo</a><a href="#contact">Code</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section class="section" id="contact">
+        <div class="wrap">
+          <div class="card contact-card reveal">
+            <span class="eyebrow">Contact</span>
+            <h2>Laten we samenwerken</h2>
+            <p>
+              Heb je een vraag, een idee of een opdracht? Stuur gerust een bericht —
+              ik reageer meestal snel.
+            </p>
+            <div class="contact-links">
+              <a class="btn" href="mailto:mazin@example.com">✉ E-mail mij</a>
+              <a class="btn" href="https://github.com/sayfjawad" target="_blank" rel="noopener">GitHub</a>
+              <a class="btn" href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <footer>
+      <div class="wrap footer-inner">
+        <span>© <span id="year"></span> Mazin. Alle rechten voorbehouden.</span>
+        <span>Gemaakt met ❤ en een kopje thee.</span>
+      </div>
+    </footer>
+
+    <script>
+      "use strict";
+
+      var root = document.documentElement;
+      var themeToggle = document.getElementById("theme-toggle");
+      var navToggle = document.getElementById("nav-toggle");
+      var navLinks = document.getElementById("nav-links");
+      var yearNode = document.getElementById("year");
+
+      // Jaartal in de footer
+      if (yearNode) yearNode.textContent = new Date().getFullYear();
+
+      // Thema wisselen
+      themeToggle.addEventListener("click", function () {
+        var next = root.dataset.theme === "dark" ? "light" : "dark";
+        root.dataset.theme = next;
+        try { localStorage.setItem("theme", next); } catch (e) { /* negeer */ }
+        themeToggle.setAttribute("aria-label",
+          next === "dark" ? "Schakelen naar lichte modus" : "Schakelen naar donkere modus");
+      });
+
+      // Mobiel menu
+      navToggle.addEventListener("click", function () {
+        var open = navLinks.classList.toggle("open");
+        navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        navToggle.setAttribute("aria-label", open ? "Menu sluiten" : "Menu openen");
+      });
+
+      // Sluit het mobiele menu als er op een link wordt geklikt
+      navLinks.addEventListener("click", function (event) {
+        if (event.target.tagName === "A") {
+          navLinks.classList.remove("open");
+          navToggle.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      // Skill-balken animeren zodra ze in beeld komen
+      var revealItems = document.querySelectorAll(".reveal");
+
+      if (!("IntersectionObserver" in window)) {
+        // Fallback: toon alles meteen als IntersectionObserver ontbreekt
+        revealItems.forEach(function (el) { el.classList.add("visible"); });
+        document.querySelectorAll(".skill-bar span").forEach(function (bar) {
+          bar.style.width = bar.dataset.level + "%";
+        });
+      } else {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var el = entry.target;
+            if (el.classList.contains("reveal")) {
+              el.classList.add("visible");
+            }
+            if (el.classList.contains("skill-bar")) {
+              var bar = el.querySelector("span");
+              if (bar) bar.style.width = bar.dataset.level + "%";
+            }
+          });
+        }, { threshold: 0.15 });
+
+        revealItems.forEach(function (el) { observer.observe(el); });
+        document.querySelectorAll(".skill-bar").forEach(function (el) { observer.observe(el); });
+      }
+    </script>
   </body>
 </html>
+
+
+
+

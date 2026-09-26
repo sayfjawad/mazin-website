@@ -1,4 +1,7 @@
 node_modules/
+data/*.db
+data/*.db-journal
+data/*.db-wal
 dist/
 build/
 .next/
