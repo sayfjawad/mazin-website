@@ -1,3 +1,6 @@
+DROP DATABASE IF EXISTS grades;
+CREATE DATABASE grades;
+
 -- Beoordelingssysteem eindexamens — databaseschema (SQLite)
 -- ---------------------------------------------------------------------------
 -- Kern van het model:
@@ -17,7 +20,7 @@ PRAGMA foreign_keys = ON;
 -- ---------------------------------------------------------------------------
 -- 1. Vakken
 -- ---------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS subjects (
+CREATE TABLE subjects (
   id         INTEGER PRIMARY KEY,
   code       TEXT    NOT NULL UNIQUE,          -- 'WISB'
   name       TEXT    NOT NULL,                 -- 'Wiskunde B'
@@ -27,7 +30,7 @@ CREATE TABLE IF NOT EXISTS subjects (
 -- ---------------------------------------------------------------------------
 -- 2. Eindexamens (één examen per vak / niveau / schooljaar)
 -- ---------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS exams (
+CREATE TABLE exams (
   id          INTEGER PRIMARY KEY,
   subject_id  INTEGER NOT NULL REFERENCES subjects(id) ON DELETE RESTRICT,
   title       TEXT    NOT NULL,
@@ -42,7 +45,7 @@ CREATE TABLE IF NOT EXISTS exams (
 -- 3. Examenonderdelen met instelbare weging
 --    weight_percent is de weging van dit onderdeel in het eindcijfer.
 -- ---------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS exam_components (
+CREATE TABLE exam_components (
   id             INTEGER PRIMARY KEY,
   exam_id        INTEGER NOT NULL REFERENCES exams(id) ON DELETE CASCADE,
   code           TEXT    NOT NULL,                 -- 'CE', 'SE1'
@@ -60,7 +63,7 @@ CREATE INDEX IF NOT EXISTS idx_exam_components_exam ON exam_components(exam_id);
 -- ---------------------------------------------------------------------------
 -- 4. Studenten
 -- ---------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS students (
+CREATE TABLE students (
   id             INTEGER PRIMARY KEY,
   student_number TEXT NOT NULL UNIQUE,
   full_name      TEXT NOT NULL,
@@ -71,7 +74,7 @@ CREATE TABLE IF NOT EXISTS students (
 -- ---------------------------------------------------------------------------
 -- 5. Inschrijving: welke student doet welk examen
 -- ---------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS enrollments (
+CREATE TABLE enrollments (
   student_id  INTEGER NOT NULL REFERENCES students(id) ON DELETE CASCADE,
   exam_id     INTEGER NOT NULL REFERENCES exams(id)    ON DELETE CASCADE,
   enrolled_at TEXT    NOT NULL DEFAULT (datetime('now')),
@@ -82,7 +85,7 @@ CREATE TABLE IF NOT EXISTS enrollments (
 -- 6. Resultaten: cijfer per student per examenonderdeel
 --    grade mag NULL zijn → onderdeel is nog niet nagekeken (voorlopig cijfer)
 -- ---------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS component_results (
+CREATE TABLE component_results (
   id           INTEGER PRIMARY KEY,
   component_id INTEGER NOT NULL REFERENCES exam_components(id) ON DELETE CASCADE,
   student_id   INTEGER NOT NULL REFERENCES students(id)         ON DELETE CASCADE,
